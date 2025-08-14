@@ -1,0 +1,32 @@
+#!/bin/bash
+# Script Inteligente V3: Prepara o SSH e adiciona a regra no firewall
+# APENAS se o firewall já estiver ativo.
+
+# Parte 1: Instalação e ativação do serviço SSH
+echo "-> Instalando pacotes (OpenSSH e UFW)..."
+sudo pacman -S --noconfirm openssh
+echo "-> Iniciando serviço SSH..."
+sudo systemctl enable --now sshd.service
+
+# Parte 2: Lógica condicional do Firewall (A parte importante!)
+echo "-> Verificando o status do firewall..."
+
+# O comando 'ufw status' é verificado. O 'grep -q' faz uma busca silenciosa por "active".
+# Se encontrar, o bloco 'if' é executado. Se não, o bloco 'else' é executado.
+if sudo ufw status | grep -q "Status: active"; then
+    echo "   - O firewall já está ATIVO."
+    echo "   - Adicionando regra para permitir seu acesso SSH (porta 22)..."
+    sudo ufw allow ssh
+    echo "   - Regra de segurança para SSH adicionada!"
+else
+    echo "   - O firewall está INATIVO. Nenhuma regra foi adicionada."
+    echo "   - A configuração do firewall será feita por você remotamente."
+fi
+
+# Parte 3: Conclusão
+echo ""
+echo "✅ Preparação Concluída!"
+echo "O acesso SSH está pronto."
+echo "---------------------------------------------------------------------"
+echo "Pode avisar que foi"
+echo "---------------------------------------------------------------------"

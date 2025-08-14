@@ -1,2 +1,0 @@
-# tu
-esse mesmo
